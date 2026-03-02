@@ -1,0 +1,16 @@
+services:
+  postgres:
+    container_name: unisql_postgres
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: unisql_db
+      POSTGRES_USER: unisql_user
+      POSTGRES_PASSWORD: unisql_password
+    ports:
+      - 5432:5432
+    networks:
+      - unisql_network
+    restart: 'no'
+networks:
+  unisql_network:
+    driver: bridge
