@@ -11,6 +11,19 @@ services:
     networks:
       - unisql_network
     restart: 'no'
+
+  mongodb:
+    container_name: unisql_mongodb
+    image: mongodb/mongodb-community-server:latest
+    environment:
+      - MONGODB_INITDB_ROOT_USERNAME=unisql_user
+      - MONGODB_INITDB_ROOT_PASSWORD=unisql_password
+    ports:
+      - 27017:27017
+    networks:
+      - unisql_network
+    restart: 'no'
+
 networks:
   unisql_network:
     driver: bridge
