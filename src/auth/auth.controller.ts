@@ -20,7 +20,9 @@ export class AuthController {
   @Redirect()
   googleCallback(@Req() req: Request & { user: User }) {
     const { accessToken } = this.authService.login(req.user);
-    const clientUrl = this.configService.getOrThrow<string>('CLIENT_URL');
+    const clientUrl = this.configService.getOrThrow<string>(
+      'CLIENT_URL_CALLBACK',
+    );
     return {
       url: `${clientUrl}?accessToken=${accessToken}`,
     };

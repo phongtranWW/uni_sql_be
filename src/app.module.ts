@@ -8,12 +8,13 @@ import jwtConfig from './config/jwt.config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ProjectModule } from './projects/project.module';
 import mongoConfig from './config/mongo.config';
+import corsConfig from './config/cors.config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [postgresConfig, jwtConfig, mongoConfig],
+      load: [postgresConfig, jwtConfig, mongoConfig, corsConfig],
     }),
     TypeOrmModule.forRootAsync({
       useFactory: (configService: ConfigService) =>

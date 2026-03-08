@@ -11,4 +11,6 @@ export default registerAs('postgres', () => ({
   database: process.env.POSTGRES_DB,
   entities: [User, OauthAccount],
   synchronize: false,
+  ssl:
+    process.env.POSTGRES_SSL === 'true' ? { rejectUnauthorized: false } : false,
 }));
