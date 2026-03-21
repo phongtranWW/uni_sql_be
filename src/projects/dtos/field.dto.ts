@@ -1,5 +1,6 @@
 import { Expose } from 'class-transformer';
-import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
+import { IsBoolean, IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { FieldType } from '../schemas/field.schema';
 
 export class FieldDto {
   @Expose()
@@ -8,9 +9,8 @@ export class FieldDto {
   name: string;
 
   @Expose()
-  @IsString()
-  @IsNotEmpty()
-  type: string;
+  @IsEnum(FieldType)
+  type: FieldType;
 
   @Expose()
   @IsBoolean()

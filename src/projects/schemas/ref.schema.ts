@@ -19,6 +19,6 @@ export class Ref {
   endpoints: [Endpoint, Endpoint];
 
   @Prop({ required: true, enum: ['-', '>', '<'] })
-  operator: string;
+  operator: RefOperator;
 }
 export const RefSchema = SchemaFactory.createForClass(Ref);
