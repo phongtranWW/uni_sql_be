@@ -69,4 +69,31 @@ export class ProjectExporter {
 
     return builder.build();
   }
+
+  toJson(): string {
+    return JSON.stringify(
+      {
+        id: this.project._id,
+        name: this.project.name,
+        tables: this.project.tables.map((table) => ({
+          name: table.name,
+          fields: table.fields.map((field) => ({
+            name: field.name,
+            type: field.type,
+            not_null: field.not_null,
+            unique: field.unique,
+            pk: field.pk,
+            increment: field.increment,
+          })),
+        })),
+        refs: this.project.refs.map((ref) => ({
+          name: ref.name,
+          operator: ref.operator,
+          endpoints: ref.endpoints,
+        })),
+      },
+      null,
+      2,
+    );
+  }
 }

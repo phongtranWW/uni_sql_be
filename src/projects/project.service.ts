@@ -104,6 +104,9 @@ export class ProjectService {
         case ExportFormat.MYSQL:
           content = exporter.toMysql();
           break;
+        case ExportFormat.JSON:
+          content = exporter.toJson();
+          break;
         default:
           break;
       }
