@@ -2,6 +2,7 @@ import { Expose, Transform, Type } from 'class-transformer';
 import { TableDto } from './table.dto';
 import { RefDto } from './ref.dto';
 import { Types } from 'mongoose';
+import { IndexDto } from './index.dto';
 
 export class ProjectDto {
   @Expose()
@@ -18,6 +19,10 @@ export class ProjectDto {
   @Expose()
   @Type(() => RefDto)
   refs: RefDto[];
+
+  @Expose()
+  @Type(() => IndexDto)
+  indexes: IndexDto[];
 
   @Expose()
   createdAt: Date;

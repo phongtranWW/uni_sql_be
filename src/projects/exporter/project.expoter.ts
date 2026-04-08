@@ -35,6 +35,16 @@ export class ProjectExporter {
       );
     }
 
+    for (const index of this.project.indexes) {
+      builder.addIndex((i) =>
+        i
+          .setName(index.name)
+          .setTableName(index.tableName)
+          .setFields(index.fields)
+          .setUnique(index.unique),
+      );
+    }
+
     return builder.build();
   }
 
@@ -67,6 +77,16 @@ export class ProjectExporter {
       );
     }
 
+    for (const index of this.project.indexes) {
+      builder.addIndex((i) =>
+        i
+          .setName(index.name)
+          .setTableName(index.tableName)
+          .setFields(index.fields)
+          .setUnique(index.unique),
+      );
+    }
+
     return builder.build();
   }
 
@@ -90,6 +110,12 @@ export class ProjectExporter {
           name: ref.name,
           operator: ref.operator,
           endpoints: ref.endpoints,
+        })),
+        indexes: this.project.indexes.map((index) => ({
+          name: index.name,
+          tableName: index.tableName,
+          fields: index.fields,
+          unique: index.unique,
         })),
       },
       null,
