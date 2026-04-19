@@ -1,5 +1,11 @@
 import { Expose } from 'class-transformer';
-import { IsBoolean, IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { FieldType } from '../schemas/field.schema';
 
 export class FieldDto {
@@ -29,6 +35,7 @@ export class FieldDto {
   increment: boolean;
 
   @Expose()
+  @IsOptional()
   @IsString()
   default: string | null = null;
 }

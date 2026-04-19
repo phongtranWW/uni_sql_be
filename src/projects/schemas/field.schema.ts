@@ -37,6 +37,6 @@ export class Field {
   increment: boolean;
 
   @Prop({ default: null })
-  default: string | null;
+  default: string;
 }
 export const FieldSchema = SchemaFactory.createForClass(Field);
