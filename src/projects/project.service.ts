@@ -70,13 +70,15 @@ export class ProjectService {
     dto: UpsertProjectDto,
     userId: string,
   ): Promise<ProjectDocument> {
-    return this.projectModel
+    const result = await this.projectModel
       .findOneAndUpdate(
         { _id: id, userId },
         { $set: { ...dto, userId } },
         { upsert: true, returnDocument: 'after', runValidators: true },
       )
       .exec();
+
+    return result;
   }
 
   async deleteById(projectId: string, userId: string): Promise<void> {
