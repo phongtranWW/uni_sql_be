@@ -20,6 +20,7 @@ export class ProjectExporter {
             field.unique,
             field.pk,
             field.increment,
+            field.default,
           );
         }
         return t;
@@ -62,6 +63,7 @@ export class ProjectExporter {
             field.unique,
             field.pk,
             field.increment,
+            field.default,
           );
         }
         return t;
@@ -104,6 +106,7 @@ export class ProjectExporter {
             unique: field.unique,
             pk: field.pk,
             increment: field.increment,
+            default: field.default,
           })),
         })),
         refs: this.project.refs.map((ref) => ({

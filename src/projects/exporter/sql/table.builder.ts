@@ -22,6 +22,7 @@ export abstract class SqlTableBuilder {
     unique?: boolean,
     pk?: boolean,
     increment?: boolean,
+    default_value?: string | null,
   ): this {
     const field = new this.fieldBuilderClass().setName(name).setType(type);
 
@@ -29,6 +30,8 @@ export abstract class SqlTableBuilder {
     if (unique) field.setUnique();
     if (pk) field.setPrimaryKey();
     if (increment) field.setAutoIncrement();
+    if (default_value !== undefined && default_value !== null)
+      field.setDefault(default_value);
 
     this.builtFields.push(field.build());
     return this;
