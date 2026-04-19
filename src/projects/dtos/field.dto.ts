@@ -27,4 +27,8 @@ export class FieldDto {
   @Expose()
   @IsBoolean()
   increment: boolean;
+
+  @Expose()
+  @IsString()
+  default: string | null = null;
 }

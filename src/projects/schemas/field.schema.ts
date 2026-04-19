@@ -35,5 +35,8 @@ export class Field {
 
   @Prop({ default: false })
   increment: boolean;
+
+  @Prop({ default: null })
+  default: string | null;
 }
 export const FieldSchema = SchemaFactory.createForClass(Field);
