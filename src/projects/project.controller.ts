@@ -16,7 +16,7 @@ import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { type UserToken } from 'src/auth/strategies/jwt.strategy';
 import { UpsertProjectDto } from './dtos/project-upsert.dto';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
-import { ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { ProjectDto } from './dtos/project.dto';
 import { plainToInstance } from 'class-transformer';
 import { ParseObjectIdPipe } from 'src/common/pipes/parse-objectid.pipe';
@@ -69,6 +69,11 @@ export class ProjectController {
   }
 
   @Put(':id')
+  @ApiOperation({
+    summary: 'Upsert project',
+    description:
+      'Updates or creates the project. The request body fully replaces stored `tables`, `refs`, and `indexes`.',
+  })
   async upsert(
     @Param('id', ParseObjectIdPipe) id: string,
     @Body() dto: UpsertProjectDto,
