@@ -33,7 +33,11 @@ import corsConfig from './config/cors.config';
     AuthModule,
     ProjectModule,
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'static'),
+      rootPath: join(process.cwd(), 'static'),
+      serveRoot: '/static',
+      serveStaticOptions: {
+        index: false,
+      },
     }),
     TemplateModule,
   ],
