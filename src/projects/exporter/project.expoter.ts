@@ -20,6 +20,7 @@ export class ProjectExporter {
             field.unique,
             field.pk,
             field.increment,
+            field.default,
           );
         }
         return t;
@@ -32,6 +33,16 @@ export class ProjectExporter {
           .setName(ref.name)
           .setEndpoints(ref.endpoints)
           .setOperator(ref.operator),
+      );
+    }
+
+    for (const index of this.project.indexes) {
+      builder.addIndex((i) =>
+        i
+          .setName(index.name)
+          .setTableName(index.tableName)
+          .setFields(index.fields)
+          .setUnique(index.unique),
       );
     }
 
@@ -52,6 +63,7 @@ export class ProjectExporter {
             field.unique,
             field.pk,
             field.increment,
+            field.default,
           );
         }
         return t;
@@ -67,6 +79,50 @@ export class ProjectExporter {
       );
     }
 
+    for (const index of this.project.indexes) {
+      builder.addIndex((i) =>
+        i
+          .setName(index.name)
+          .setTableName(index.tableName)
+          .setFields(index.fields)
+          .setUnique(index.unique),
+      );
+    }
+
     return builder.build();
+  }
+
+  toJson(): string {
+    return JSON.stringify(
+      {
+        id: this.project._id,
+        name: this.project.name,
+        tables: this.project.tables.map((table) => ({
+          name: table.name,
+          fields: table.fields.map((field) => ({
+            name: field.name,
+            type: field.type,
+            not_null: field.not_null,
+            unique: field.unique,
+            pk: field.pk,
+            increment: field.increment,
+            default: field.default,
+          })),
+        })),
+        refs: this.project.refs.map((ref) => ({
+          name: ref.name,
+          operator: ref.operator,
+          endpoints: ref.endpoints,
+        })),
+        indexes: this.project.indexes.map((index) => ({
+          name: index.name,
+          tableName: index.tableName,
+          fields: index.fields,
+          unique: index.unique,
+        })),
+      },
+      null,
+      2,
+    );
   }
 }

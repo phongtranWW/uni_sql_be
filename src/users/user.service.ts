@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
-import { EntityManager } from 'typeorm';
+import { EntityManager, In } from 'typeorm';
 import { OauthAccount } from './entities/oauth-account.entity';
 import { User } from './entities/user.entity';
 import { OAuthProfileDto } from './dtos/oauth-profile.dto';
@@ -61,5 +61,12 @@ export class UserService {
     });
     if (!user) throw new NotFoundException('User not found');
     return user;
+  }
+
+  async findByIds(ids: string[]): Promise<User[]> {
+    if (ids.length === 0) return [];
+    return this.entityManager.find(User, {
+      where: { id: In(ids) },
+    });
   }
 }

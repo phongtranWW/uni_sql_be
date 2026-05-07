@@ -1,4 +1,4 @@
-import { Expose, Transform } from 'class-transformer';
+import { Expose, Transform, Type } from 'class-transformer';
 import { Types } from 'mongoose';
 
 export class ProjectSummaryDto {
@@ -14,4 +14,19 @@ export class ProjectSummaryDto {
 
   @Expose()
   updatedAt: Date;
+
+  @Expose()
+  @Type(() => SharedUserSummaryDto)
+  sharedUsers?: SharedUserSummaryDto[];
+}
+
+export class SharedUserSummaryDto {
+  @Expose()
+  id: string;
+
+  @Expose()
+  name?: string;
+
+  @Expose()
+  avatar?: string;
 }

@@ -1,4 +1,9 @@
 import {
+  MySQLIndexBuilder,
+  PostgresIndexBuilder,
+  SqlIndexBuilder,
+} from './index.builder';
+import {
   MySQLRefBuilder,
   PostgresRefBuilder,
   SqlRefBuilder,
@@ -12,9 +17,11 @@ import {
 export abstract class DatabaseBuilder {
   protected name: string = '';
   protected tableBuilders: SqlTableBuilder[] = [];
+  protected indexBuilders: SqlIndexBuilder[] = [];
   protected refBuilders: SqlRefBuilder[] = [];
 
   protected abstract tableBuilderClass: new () => SqlTableBuilder;
+  protected abstract indexBuilderClass: new () => SqlIndexBuilder;
   protected abstract refBuilderClass: new () => SqlRefBuilder;
 
   setName(name: string): this {
@@ -34,24 +41,36 @@ export abstract class DatabaseBuilder {
     return this;
   }
 
+  addIndex(fn: (builder: SqlIndexBuilder) => SqlIndexBuilder): this {
+    const index = fn(new this.indexBuilderClass());
+    this.indexBuilders.push(index);
+    return this;
+  }
+
   build(): string {
     const createDatabase = this.name ? `CREATE DATABASE ${this.name};\n\n` : '';
     const tables = this.tableBuilders.map((t) => t.build()).join('\n\n');
+    const indexes =
+      this.indexBuilders.length > 0
+        ? '\n\n' + this.indexBuilders.map((i) => i.build()).join('\n')
+        : '';
     const refs =
       this.refBuilders.length > 0
         ? '\n\n' + this.refBuilders.map((r) => r.build()).join('\n')
         : '';
 
-    return `${createDatabase}${tables}${refs}`;
+    return `${createDatabase}${tables}${indexes}${refs}`;
   }
 }
 
 export class PostgresDatabaseBuilder extends DatabaseBuilder {
   protected tableBuilderClass = PostgresTableBuilder;
+  protected indexBuilderClass = PostgresIndexBuilder;
   protected refBuilderClass = PostgresRefBuilder;
 }
 
 export class MySQLDatabaseBuilder extends DatabaseBuilder {
   protected tableBuilderClass = MySQLTableBuilder;
+  protected indexBuilderClass = MySQLIndexBuilder;
   protected refBuilderClass = MySQLRefBuilder;
 }
