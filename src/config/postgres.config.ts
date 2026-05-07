@@ -1,6 +1,7 @@
 import { registerAs } from '@nestjs/config';
 import { OauthAccount } from 'src/users/entities/oauth-account.entity';
 import { User } from 'src/users/entities/user.entity';
+import { Template } from 'src/templates/entities/template.entity';
 
 export default registerAs('postgres', () => ({
   type: 'postgres' as const,
@@ -9,8 +10,10 @@ export default registerAs('postgres', () => ({
   username: process.env.POSTGRES_USER,
   password: process.env.POSTGRES_PASSWORD,
   database: process.env.POSTGRES_DB,
-  entities: [User, OauthAccount],
+  entities: [User, OauthAccount, Template],
   synchronize: false,
+  migrationsRun: true,
+  migrations: ['dist/migrations/*.js'],
   ssl:
     process.env.POSTGRES_SSL === 'true' ? { rejectUnauthorized: false } : false,
 }));

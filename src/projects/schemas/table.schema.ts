@@ -17,5 +17,11 @@ export class Table {
 
   @Prop({ type: String, default: null })
   alias: string | null;
+
+  @Prop({ type: { x: Number, y: Number }, default: { x: 0, y: 0 }, _id: false })
+  position: {
+    x: number;
+    y: number;
+  };
 }
 export const TableSchema = SchemaFactory.createForClass(Table);

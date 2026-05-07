@@ -1,13 +1,24 @@
-import { Expose, Type } from 'class-transformer';
+import { Expose, Transform, Type } from 'class-transformer';
 import {
   IsArray,
   IsBoolean,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
   ValidateNested,
 } from 'class-validator';
 import { FieldDto } from './field.dto';
+
+export class TablePositionDto {
+  @Expose()
+  @IsNumber()
+  x: number = 0;
+
+  @Expose()
+  @IsNumber()
+  y: number = 0;
+}
 
 export class TableDto {
   @Expose()
@@ -34,4 +45,10 @@ export class TableDto {
   @IsOptional()
   @IsString()
   alias: string | null;
+
+  @Expose()
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => TablePositionDto)
+  position: TablePositionDto;
 }

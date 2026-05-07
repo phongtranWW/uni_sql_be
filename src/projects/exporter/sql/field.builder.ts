@@ -7,6 +7,7 @@ export abstract class SqlFieldBuilder {
   protected unique: boolean = false;
   protected pk: boolean = false;
   protected increment: boolean = false;
+  protected default: string | null = null;
 
   protected abstract typeMap: Record<FieldType, string>;
   protected abstract autoIncrementClause: string;
@@ -36,6 +37,11 @@ export abstract class SqlFieldBuilder {
     return this;
   }
 
+  setDefault(value: string): this {
+    this.default = value;
+    return this;
+  }
+
   build(): string {
     if (!this.name) throw new Error('name is required');
     if (!this.type) throw new Error('type is required');
@@ -44,7 +50,8 @@ export abstract class SqlFieldBuilder {
     if (this.pk) parts.push('PRIMARY KEY');
     if (this.increment) parts.push(this.autoIncrementClause);
     if (this.unique && !this.pk) parts.push('UNIQUE');
-    parts.push(this.notNull ? 'NOT NULL' : 'NULL');
+    if (this.notNull) parts.push('NOT NULL');
+    if (this.default) parts.push(`DEFAULT ${this.default}`);
 
     return parts.join(' ');
   }
