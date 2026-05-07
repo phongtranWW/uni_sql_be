@@ -7,6 +7,7 @@ import {
   Param,
   ParseEnumPipe,
   ParseIntPipe,
+  Post,
   Put,
   Query,
   UseGuards,
@@ -23,6 +24,8 @@ import { ParseObjectIdPipe } from 'src/common/pipes/parse-objectid.pipe';
 import { ResponsePagination } from 'src/common/types/response-pagination.type';
 import { ProjectSummaryDto } from './dtos/project-summary.dto';
 import { ExportFormat } from './params/export-project.params';
+import { ShareProjectDto } from './dtos/share-project.dto';
+import { RevokeShareDto } from './dtos/revoke-share.dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
@@ -49,6 +52,36 @@ export class ProjectController {
     @Query('search') search?: string,
   ): Promise<ResponsePagination<ProjectSummaryDto>> {
     return await this.projectService.getManyBy(user.id, {
+      search,
+      page,
+      limit,
+      sortBy,
+      sortOrder,
+    });
+  }
+
+  @Get('shared-with-me')
+  @ApiOperation({
+    summary: 'List projects shared with current user',
+  })
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({
+    name: 'sortBy',
+    required: false,
+    enum: ['name', 'createdAt', 'updatedAt'],
+  })
+  @ApiQuery({ name: 'sortOrder', required: false, enum: ['asc', 'desc'] })
+  @ApiQuery({ name: 'search', required: false, type: String })
+  async getSharedWithMe(
+    @CurrentUser() user: UserToken,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+    @Query('sortBy') sortBy: 'name' | 'createdAt' | 'updatedAt',
+    @Query('sortOrder') sortOrder: 'asc' | 'desc',
+    @Query('search') search?: string,
+  ): Promise<ResponsePagination<ProjectSummaryDto>> {
+    return await this.projectService.getSharedWithMe(user.id, {
       search,
       page,
       limit,
@@ -101,5 +134,43 @@ export class ProjectController {
     return await this.projectService.export(id, user.id, {
       format,
     });
+  }
+
+  @Get(':id/shares')
+  @ApiOperation({
+    summary: 'List users that the project is shared with (owner only)',
+  })
+  async getShares(
+    @Param('id', ParseObjectIdPipe) id: string,
+    @CurrentUser() user: UserToken,
+  ) {
+    return await this.projectService.getShares(id, user.id);
+  }
+
+  @Post(':id/shares')
+  @ApiOperation({
+    summary: 'Share project with users (owner only)',
+    description:
+      'Grants the listed users access to the project until `expiresAt`. ' +
+      'Re-sharing with an existing user updates the expiration time.',
+  })
+  async share(
+    @Param('id', ParseObjectIdPipe) id: string,
+    @Body() dto: ShareProjectDto,
+    @CurrentUser() user: UserToken,
+  ) {
+    return await this.projectService.shareWithUsers(id, user.id, dto);
+  }
+
+  @Delete(':id/shares')
+  @ApiOperation({
+    summary: 'Revoke share access for users (owner only)',
+  })
+  async revokeShares(
+    @Param('id', ParseObjectIdPipe) id: string,
+    @Body() dto: RevokeShareDto,
+    @CurrentUser() user: UserToken,
+  ) {
+    return await this.projectService.revokeShares(id, user.id, dto.userIds);
   }
 }
