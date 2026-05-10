@@ -48,7 +48,9 @@ export abstract class DatabaseBuilder {
   }
 
   build(): string {
-    const createDatabase = this.name ? `CREATE DATABASE ${this.name};\n\n` : '';
+    const createDatabase = this.name
+      ? `-- NOTE: The CREATE DATABASE statement below is commented out.\n-- Please create the database manually before running this script, or uncomment the line below to create it.\n-- CREATE DATABASE ${this.name};\n\n`
+      : '';
     const tables = this.tableBuilders.map((t) => t.build()).join('\n\n');
     const indexes =
       this.indexBuilders.length > 0
