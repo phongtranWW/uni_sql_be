@@ -53,6 +53,33 @@ export class ProjectService {
     return project;
   }
 
+  async getOwnedById(id: string, userId: string): Promise<ProjectDocument> {
+    const project = await this.projectModel.findOne({ _id: id, userId }).exec();
+
+    if (!project) throw new NotFoundException('Project not found');
+    return project;
+  }
+
+  async getSharedById(id: string, userId: string): Promise<ProjectDocument> {
+    const now = new Date();
+    const project = await this.projectModel
+      .findOne({
+        _id: id,
+        userId: { $ne: userId },
+        shares: {
+          $elemMatch: {
+            userId,
+            $or: [{ expiresAt: null }, { expiresAt: { $gt: now } }],
+          },
+        },
+      })
+      .exec();
+
+    if (!project)
+      throw new NotFoundException('Project not found or not shared with you');
+    return project;
+  }
+
   async getManyBy(
     userId: string,
     params: GetManyProjectsParams,
