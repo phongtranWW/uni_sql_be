@@ -90,12 +90,29 @@ export class ProjectController {
     });
   }
 
+  @Get('shared-with-me/:id')
+  @ApiOperation({
+    summary: 'Get a specific project shared with current user',
+  })
+  async getSharedById(
+    @Param('id', ParseObjectIdPipe) id: string,
+    @CurrentUser() user: UserToken,
+  ) {
+    const rawProject = await this.projectService.getSharedById(id, user.id);
+    return plainToInstance(ProjectDto, rawProject.toObject(), {
+      excludeExtraneousValues: true,
+    });
+  }
+
   @Get(':id')
+  @ApiOperation({
+    summary: 'Get a project owned by current user',
+  })
   async getOneById(
     @Param('id', ParseObjectIdPipe) id: string,
     @CurrentUser() user: UserToken,
   ) {
-    const rawProject = await this.projectService.getOneById(id, user.id);
+    const rawProject = await this.projectService.getOwnedById(id, user.id);
     return plainToInstance(ProjectDto, rawProject.toObject(), {
       excludeExtraneousValues: true,
     });
