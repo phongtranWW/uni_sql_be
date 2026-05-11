@@ -25,6 +25,7 @@
     "migration:revert": "npx typeorm-ts-node-commonjs migration:revert -d src/config/typeorm.datasource.ts"
   },
   "dependencies": {
+    "@dbml/core": "^7.1.2",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.3",
     "@nestjs/core": "^11.0.1",
