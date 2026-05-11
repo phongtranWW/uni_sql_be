@@ -5,6 +5,8 @@
 /jsons
 /scripts
 /prompts
+/data
+/docs
 
 # Logs
 logs
