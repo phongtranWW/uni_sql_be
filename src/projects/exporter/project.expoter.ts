@@ -1,95 +1,20 @@
+import { exporter } from '@dbml/core';
 import { ProjectDocument } from '../schemas/project.schema';
-import {
-  MySQLDatabaseBuilder,
-  PostgresDatabaseBuilder,
-} from './sql/database.builder';
+import { DbmlBuilder, DbmlDialect } from './dbml.builder';
+
 export class ProjectExporter {
   constructor(private readonly project: ProjectDocument) {}
 
   toPostgresql(): string {
-    const builder = new PostgresDatabaseBuilder();
-    builder.setName(this.project.name);
-    for (const table of this.project.tables) {
-      builder.addTable((t) => {
-        t.setName(table.name);
-        for (const field of table.fields) {
-          t.addField(
-            field.name,
-            field.type,
-            field.not_null,
-            field.unique,
-            field.pk,
-            field.increment,
-            field.default,
-          );
-        }
-        return t;
-      });
-    }
-
-    for (const ref of this.project.refs) {
-      builder.addRef((r) =>
-        r
-          .setName(ref.name)
-          .setEndpoints(ref.endpoints)
-          .setOperator(ref.operator),
-      );
-    }
-
-    for (const index of this.project.indexes) {
-      builder.addIndex((i) =>
-        i
-          .setName(index.name)
-          .setTableName(index.tableName)
-          .setFields(index.fields)
-          .setUnique(index.unique),
-      );
-    }
-
-    return builder.build();
+    return this.toSql('postgres');
   }
 
   toMysql(): string {
-    const builder = new MySQLDatabaseBuilder();
-    builder.setName(this.project.name);
-    for (const table of this.project.tables) {
-      builder.addTable((t) => {
-        t.setName(table.name);
-        for (const field of table.fields) {
-          t.addField(
-            field.name,
-            field.type,
-            field.not_null,
-            field.unique,
-            field.pk,
-            field.increment,
-            field.default,
-          );
-        }
-        return t;
-      });
-    }
+    return this.toSql('mysql');
+  }
 
-    for (const ref of this.project.refs) {
-      builder.addRef((r) =>
-        r
-          .setName(ref.name)
-          .setEndpoints(ref.endpoints)
-          .setOperator(ref.operator),
-      );
-    }
-
-    for (const index of this.project.indexes) {
-      builder.addIndex((i) =>
-        i
-          .setName(index.name)
-          .setTableName(index.tableName)
-          .setFields(index.fields)
-          .setUnique(index.unique),
-      );
-    }
-
-    return builder.build();
+  toDbml(): string {
+    return new DbmlBuilder(this.project, 'dbml').build();
   }
 
   toJson(): string {
@@ -124,5 +49,27 @@ export class ProjectExporter {
       null,
       2,
     );
+  }
+
+  private toSql(dialect: Extract<DbmlDialect, 'postgres' | 'mysql'>): string {
+    if (!this.project.tables || this.project.tables.length === 0) {
+      return this.buildCreateDatabaseHeader();
+    }
+
+    const dbml = new DbmlBuilder(this.project, dialect).build();
+    const sql = exporter.export(dbml, dialect);
+    return `${this.buildCreateDatabaseHeader()}${sql}`;
+  }
+
+  private buildCreateDatabaseHeader(): string {
+    const name = this.project.name;
+    if (!name) return '';
+    return [
+      '-- NOTE: The CREATE DATABASE statement below is commented out.',
+      '-- Please create the database manually before running this script, or uncomment the line below to create it.',
+      `-- CREATE DATABASE ${name};`,
+      '',
+      '',
+    ].join('\n');
   }
 }

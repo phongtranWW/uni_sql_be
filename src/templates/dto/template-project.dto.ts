@@ -7,22 +7,6 @@
 
 // ── Enums ──────────────────────────────────────────────
 
-export enum FieldType {
-  INT = 'INT',
-  FLOAT = 'FLOAT',
-  DOUBLE = 'DOUBLE',
-  DECIMAL = 'DECIMAL',
-  CHAR = 'CHAR',
-  VARCHAR = 'VARCHAR',
-  TEXT = 'TEXT',
-  BOOLEAN = 'BOOLEAN',
-  DATE = 'DATE',
-  TIME = 'TIME',
-  DATETIME = 'DATETIME',
-  TIMESTAMP = 'TIMESTAMP',
-  UUID = 'UUID',
-}
-
 export enum RefOperator {
   ONE_TO_ONE = '-',
   MANY_TO_ONE = '>',
@@ -33,7 +17,7 @@ export enum RefOperator {
 
 export class TemplateProjectFieldDto {
   name: string;
-  type: FieldType;
+  type: string;
   unique: boolean;
   pk: boolean;
   not_null: boolean;

@@ -4,10 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Repository, ILike } from 'typeorm';
 import { Model } from 'mongoose';
 import { Template } from './entities/template.entity';
-import {
-  Project,
-  ProjectDocument,
-} from '../projects/schemas/project.schema';
+import { Project, ProjectDocument } from '../projects/schemas/project.schema';
 import { GetManyTemplatesQuery } from './params/get-many-templates.params';
 import { TemplateDto } from './dto/template.dto';
 import { TemplateSummaryDto } from './dto/template-summary.dto';
@@ -134,7 +131,10 @@ export class TemplateService {
             tableName: r.endpoints?.[1]?.tableName,
             fieldName: r.endpoints?.[1]?.fieldName,
           },
-        ] as [{ tableName: string; fieldName: string }, { tableName: string; fieldName: string }],
+        ] as [
+          { tableName: string; fieldName: string },
+          { tableName: string; fieldName: string },
+        ],
         operator: r.operator,
       })),
       indexes: (doc.indexes ?? []).map((i: Record<string, any>) => ({
