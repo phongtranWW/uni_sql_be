@@ -20,10 +20,13 @@ export class ProjectExporter {
   toJson(): string {
     return JSON.stringify(
       {
-        id: this.project._id,
         name: this.project.name,
         tables: this.project.tables.map((table) => ({
           name: table.name,
+          alias: table.alias,
+          headerColor: table.headerColor,
+          isSelected: table.isSelected,
+          position: table.position,
           fields: table.fields.map((field) => ({
             name: field.name,
             type: field.type,
